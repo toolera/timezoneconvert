@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 interface TimeZone {
   value: string;
@@ -47,7 +47,7 @@ export default function TimezoneConverter() {
     setSourceTime(timeString);
   }, []);
 
-  const convertTime = () => {
+  const convertTime = useCallback(() => {
     if (!sourceTime) return;
 
     try {
@@ -85,14 +85,14 @@ export default function TimezoneConverter() {
       });
 
       setConvertedTime(targetTimeString);
-    } catch (error) {
+    } catch {
       setConvertedTime('Error converting time');
     }
-  };
+  }, [sourceTime, sourceTimezone, targetTimezone]);
 
   useEffect(() => {
     convertTime();
-  }, [sourceTime, sourceTimezone, targetTimezone]);
+  }, [sourceTime, sourceTimezone, targetTimezone, convertTime]);
 
   const getCurrentTimeInTimezone = (timezone: string) => {
     return currentTime.toLocaleString('en-US', {
